@@ -30,6 +30,27 @@ class SequencePipe(Pipe):
         return _process(list(self._pipes), passed_tokens);
 
 
+class AnyPipe(Pipe):
+    def __init__(self, pipes):
+        self._pipes = pipes
+
+    def process(self, context, passed_tokens=None):
+        for pipe in self._pipes:
+            result = pipe.process(context, passed_tokens)
+            if result:
+                return result
+
+        return []
+
+
+class GenericPipe(Pipe):
+    def __init__(self, fun):
+        self._fun = fun
+
+    def process(self, context, passed_tokens=None):
+        return self._fun(passed_tokens)
+
+
 class FindTokensPipe(Pipe):
     def __init__(self, pattern, precondition=None):
         self._pattern = pattern
