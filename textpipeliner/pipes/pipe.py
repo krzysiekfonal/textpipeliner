@@ -11,11 +11,13 @@ class Pipe:
 
 
 class AggregatePipe(Pipe):
-    def __init__(self, pipes):
+    def __init__(self, pipes, with_flattening=True):
         self._pipes = pipes
+        self._with_flattening = with_flattening
 
     def process(self, context, passed_tokens):
-        return [pipe.process(context, passed_tokens) for pipe in self._pipes]
+        agg_result = [pipe.process(context, passed_tokens) for pipe in self._pipes]
+        return agg_result if not self._with_flattening else [item for sublist in agg_result for item in sublist]
 
 
 class SequencePipe(Pipe):
@@ -24,8 +26,9 @@ class SequencePipe(Pipe):
 
     def process(self, context, passed_tokens=None):
         def _process(_pipes, _passed_tokens):
-            pipe = _pipes.pop()
-            return _process(_pipes(), pipe.process(context, _passed_tokens))
+            pipe = _pipes.pop(0)
+            result = pipe.process(context, _passed_tokens)
+            return result if not _pipes else _process(_pipes, result)
 
         return _process(list(self._pipes), passed_tokens);
 
@@ -48,7 +51,7 @@ class GenericPipe(Pipe):
         self._fun = fun
 
     def process(self, context, passed_tokens=None):
-        return self._fun(passed_tokens)
+        return self._fun(context, passed_tokens)
 
 
 class FindTokensPipe(Pipe):
@@ -59,7 +62,7 @@ class FindTokensPipe(Pipe):
     def process(self, context, passed_tokens=None):
         return \
             find_tokens(context.current_sent(), self._pattern) \
-                if self._precondition and match_tree(context.current_sent(), self._precondition) else []
+            if not self._precondition or match_tree(context.current_sent(), self._precondition) else []
 
 
 class NamedEntityFilterPipe(Pipe):
@@ -67,14 +70,30 @@ class NamedEntityFilterPipe(Pipe):
         self._named_entity_type = named_entity_type
 
     def process(self, context, passed_tokens=None):
-        return [x for x in passed_tokens \
-                if x.ent_iob_ == 'B' and (not self._named_entity_type or x.ent_type_ == self._named_entity_type)]
+        return [x for x in passed_tokens
+                if (x.ent_iob_ == 'B' or x.ent_iob_ == 'I') and
+                (not self._named_entity_type or x.ent_type_ == self._named_entity_type)]
 
 
 class NamedEntityExtractorPipe(Pipe):
     def process(self, context, passed_tokens=None):
         def _extract_named_entity(token):
-            result, i = [token], token.i+1
+            ne = [token]
+            if token.ent_iob_ == 'I':
+                i = token.i-1
+                while context.doc[i].ent_iob_ != 'O':
+                    ne.insert(0, context.doc[i])
+                    i -= 1
+            i = token.i+1
             while context.doc[i].ent_iob_ == 'I':
-                result += context.doc[i]
-        return [_extract_named_entity(x) for x in passed_tokens if x.ent_iob_ == 'B']
+                ne.append(context.doc[i])
+                i += 1
+            return ne
+        result = []
+        for x in passed_tokens:
+            if x.ent_iob_ == 'B' or x.ent_iob_ == 'I':
+                ne = _extract_named_entity(x)
+                if not any(ne[0].i == _ne[0].i for _ne in result):
+                    result.append(ne)
+
+        return result[0] if len(result) == 1 else result

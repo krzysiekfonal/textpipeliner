@@ -8,7 +8,7 @@ class Context:
         self.doc = doc
 
     def next_sent(self):
-        if self._current_sent_idx == len(self._sents):
+        if self._current_sent_idx >= len(self._sents)-1:
             return None
 
         self._current_sent_idx += 1
