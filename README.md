@@ -1,4 +1,4 @@
-# grammaregex
+# textpipeliner
 
 Library for extracting specific words from sentences of a document
 
