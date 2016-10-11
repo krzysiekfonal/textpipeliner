@@ -97,3 +97,20 @@ class NamedEntityExtractorPipe(Pipe):
                     result.append(ne)
 
         return result[0] if len(result) == 1 else result
+
+
+class UnfoldConjPipe(Pipe):
+    def process(self, context, passed_tokens=None):
+        if passed_tokens:
+            result = [passed_tokens[0]]
+            current = passed_tokens[0]
+            while current:
+                for t in current.children:
+                    if t.dep_ == "conj":
+                        result.append(t)
+                        current = t
+                        break
+                else:
+                    current = None
+            return result
+        return []

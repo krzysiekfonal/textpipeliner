@@ -5,7 +5,8 @@ from pipe import Pipe, \
     FindTokensPipe, \
     GenericPipe, \
     NamedEntityExtractorPipe, \
-    NamedEntityFilterPipe
+    NamedEntityFilterPipe, \
+    UnfoldConjPipe
 
 __all__ = ["Pipe", "SequencePipe", "AggregatePipe", "AnyPipe", "FindTokensPipe", "GenericPipe", "NamedEntityFilterPipe",
            "NamedEntityExtractorPipe"]
