@@ -1,12 +1,10 @@
 import unittest
-from textpipeliner import PipelineEngine, Context
+from textpipeliner import *
 from textpipeliner.pipes import *
 import spacy
 
 # _sentence will be used throughout the all tests as it is time-consuming to create it.
 # The fact of time-consumption is also reason for keeping all tests in single module file
-from textpipeliner.pipes.pipe import UnfoldConjPipe
-
 _sentence = None
 
 

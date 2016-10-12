@@ -1,4 +1,4 @@
-from pipe import Pipe, \
+from .pipe import Pipe, \
     SequencePipe, \
     AggregatePipe, \
     AnyPipe, \
@@ -9,4 +9,4 @@ from pipe import Pipe, \
     UnfoldConjPipe
 
 __all__ = ["Pipe", "SequencePipe", "AggregatePipe", "AnyPipe", "FindTokensPipe", "GenericPipe", "NamedEntityFilterPipe",
-           "NamedEntityExtractorPipe"]
+           "NamedEntityExtractorPipe", "UnfoldConjPipe"]

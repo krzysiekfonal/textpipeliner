@@ -19,7 +19,7 @@ class Context:
         return self.current_sent()
 
     def isents(self):
-        for i in xrange(len(self._sents)):
+        for i in range(len(self._sents)):
             yield self.next_sent()
 
     def current_sent(self):
