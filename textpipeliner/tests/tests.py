@@ -104,7 +104,7 @@ class PipelineEngineTestCase(unittest.TestCase):
                                         AggregatePipe([NamedEntityFilterPipe("PERSON"), NamedEntityFilterPipe("ORG")]),
                                         NamedEntityExtractorPipe()])]
 
-        engine = PipelineEngine(pipes_structure, _doc)
+        engine = PipelineEngine(pipes_structure, self.ctx)
         expected = [([_doc[1]], [_doc[2]], [_doc[4], _doc[5], _doc[6], _doc[7], _doc[8], _doc[9], _doc[10], _doc[11]])]
         self.assertEqual(expected, engine.process())
 
@@ -117,7 +117,7 @@ class PipelineEngineTestCase(unittest.TestCase):
                                         AggregatePipe([NamedEntityFilterPipe("PERSON"), NamedEntityFilterPipe("ORG")]),
                                         NamedEntityExtractorPipe()])]
 
-        engine = PipelineEngine(pipes_structure, _doc, [1])
+        engine = PipelineEngine(pipes_structure, self.ctx, [1])
         expected = []
         self.assertEqual(expected, engine.process())
 
@@ -130,7 +130,7 @@ class PipelineEngineTestCase(unittest.TestCase):
                                         AggregatePipe([NamedEntityFilterPipe("PERSON"), NamedEntityFilterPipe("ORG")]),
                                         NamedEntityExtractorPipe()])]
 
-        engine = PipelineEngine([pipes_structure, pipes_structure], _doc)
+        engine = PipelineEngine([pipes_structure, pipes_structure], self.ctx)
         expected = [([_doc[1]], [_doc[2]], [_doc[4], _doc[5], _doc[6], _doc[7], _doc[8], _doc[9], _doc[10], _doc[11]]),
                     ([_doc[1]], [_doc[2]], [_doc[4], _doc[5], _doc[6], _doc[7], _doc[8], _doc[9], _doc[10], _doc[11]])]
         self.assertEqual(expected, engine.process())
