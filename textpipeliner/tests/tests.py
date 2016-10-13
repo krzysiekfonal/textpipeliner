@@ -121,3 +121,17 @@ class PipelineEngineTestCase(unittest.TestCase):
         expected = []
         self.assertEqual(expected, engine.process())
 
+    def test_process_with_multi_pipes(self):
+        pipes_structure = [SequencePipe([FindTokensPipe("VBD/nsubj/*"),
+                                        AggregatePipe([NamedEntityFilterPipe("PERSON"), NamedEntityFilterPipe("ORG")]),
+                                        NamedEntityExtractorPipe()]),
+                           FindTokensPipe("VBD"),
+                           SequencePipe([FindTokensPipe("VBD/**/*/pobj/NNP"),
+                                        AggregatePipe([NamedEntityFilterPipe("PERSON"), NamedEntityFilterPipe("ORG")]),
+                                        NamedEntityExtractorPipe()])]
+
+        engine = PipelineEngine([pipes_structure, pipes_structure], _doc)
+        expected = [([_doc[1]], [_doc[2]], [_doc[4], _doc[5], _doc[6], _doc[7], _doc[8], _doc[9], _doc[10], _doc[11]]),
+                    ([_doc[1]], [_doc[2]], [_doc[4], _doc[5], _doc[6], _doc[7], _doc[8], _doc[9], _doc[10], _doc[11]])]
+        self.assertEqual(expected, engine.process())
+

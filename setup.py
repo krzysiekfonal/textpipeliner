@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='textpipeliner',
-      version='0.2.1',
+      version='0.3',
       description='textpipeliner - library for extracting specific words from sentences of a document',
       long_description='This library allows you to extract specific words(in form of tuple) going through every '
                        'sentence of a document using custom created structure of extraction processing.',

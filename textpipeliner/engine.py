@@ -12,10 +12,17 @@ class PipelineEngine:
 
     def process(self):
         result = []
+
+        if not self._pipes:
+            return result
+
+        pipes_list = self._pipes if isinstance(self._pipes[0], list) else [self._pipes]
+
         while self._context.next_sent():
-            t = tuple(pipe.process(self._context, None) for pipe in self._pipes)
-            if self._verify_requirements(t):
-                result.append(t)
+            for pipes in pipes_list:
+                t = tuple(pipe.process(self._context, None) for pipe in pipes)
+                if self._verify_requirements(t):
+                    result.append(t)
 
         return result
 
