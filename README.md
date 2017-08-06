@@ -98,6 +98,9 @@ To process and get list of desired triples we can for instance do following step
 
 ```Python
 import spacy
+from textpipeliner import PipelineEngine, Context
+from textpipeliner.pipes import *
+
 nlp = spacy.load("en")
 doc = nlp(u"The Empire of Japan aimed to dominate Asia and the " \
                "Pacific and was already at war with the Republic of China " \
@@ -130,7 +133,7 @@ pipes_structure = [SequencePipe([FindTokensPipe("VERB/nsubj/*"),
                                                 NamedEntityFilterPipe("PERSON")]),
                                           NamedEntityExtractorPipe()])])]
 
-engine = PipelineEngine(pipes_structure, doc, [0,1,2])
+engine = PipelineEngine(pipes_structure, Context(doc), [0,1,2])
 engine.process()
 ```
 
