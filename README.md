@@ -63,7 +63,7 @@ For now, the library contains 7 pipes:
 ## Example
 Below you can see a complete example of how to process a text getting triples - kind of RDF - consistent of: subject, connecting action, object.
 
-The text used is obtained from https://www.americanhistoryusa.com/topic/world-war-ii/.
+The text used is obtained from the [World War II Wikipedia page](https://en.wikipedia.org/wiki/World_War_II).
 
 ```Python
 import spacy
